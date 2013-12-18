@@ -6,4 +6,4 @@ paginate: 8
 permalink: /:title
 
 title: yunzhi
-url: http://localhost:4000
+url: http://yunzhi.github.io
