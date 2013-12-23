@@ -7,10 +7,12 @@ category: blog
 
 gcc 作为linux强大的编译工具，了解其用法对日常编程具有很大的作用。windows下安装类unix环境也可以使用，我就在win7上安装了cgwin，把它的bin目录加到系统的环境变量里，然后cmd下就可以用它那一堆强大的工具了，例如ls,grep,sed,gcc等工具了。
 
+下面例子中的环境: x86 win7 | cgwin | gcc version 4.8.2 (GCC)
 
-##常用gcc编译选项
 
+## 常用gcc编译选项
 简单编辑了一个test.c文件。如下：
+
 	#include<stdio.h>
 
 	int main()
@@ -54,7 +56,7 @@ gcc 作为linux强大的编译工具，了解其用法对日常编程具有很�
 		.cfi_def_cfa_register 5
 		andl	$-16, %esp
 		subl	$16, %esp
-		call	___main
+		call	___main	
 		movl	$LC0, (%esp)
 		call	_puts
 		movl	$0, %eax
@@ -65,9 +67,32 @@ gcc 作为linux强大的编译工具，了解其用法对日常编程具有很�
 		.cfi_endproc
 	LFE7:
 		.ident	"GCC: (GNU) 4.8.2"
-		.def	_puts;	.scl	2;	.type	32;	.ende
+		.def	_puts;	.scl	2;	.type	32;	.endef
 
-### 编译成二级制文件 -c
+
+说明：
+
+1. GCC产生的汇编代码中以 "." 开头的行都是指导汇编器和链接器的命令，称为“汇编器命令”。
+2. 第2行：gcc编译器为_main插入的初始化函数。只有当gcc检测到当前的系统不支持 constructors 和destructors才会在编译的时候将该函数插入。具体请参见[gcc手册](http://gcc.gnu.org/onlinedocs/gccint/Initialization.html)。如果在编译的时候指定了INIT_SECTION_ASM_OP便不会出现_main函数。
+3. 第5行：定义只读字符，字符以'\0'结束。
+4. 第8行：用户在C中定义的main函数。gcc自动将其更名为__main。如果直接用汇编语言编写程序，一般是_start.
+5. 第12行：main函数在最终的可执行文件中只是一个被调用的函数,在调用函数时需要做一些入栈和对齐操作，还有重要的一点就是传递的参数也在栈中。这句的作用是将%ebp入栈。
+6. 第15行：将保存当前的栈指针%esp移入%ebp中。
+7. 第17-18行：栈对齐操作
+8. 第19行：调用_main函数
+9. 第21行：将字符串的地址拷贝到%esp所指的内存中，该地址将会传递给_puts（printf）函数。
+10. 第22行：将返回值（立即数0）传递给%eax 
+11. 第23行： 相当于movl %ebp, %esp   popl %ebp，与它相对应的命令是enter
+12. 第26行：main函数执行完毕，返回
+
+
+简言之，当函数被调用时，执行操作如下：
+
+1. 将帧指针（ebp）压入栈中。 pushl %ebp ; push后的l说明是一个long型
+2. 用ebp保存当前栈指针(esp)。 movl %esp, %ebp;
+3. 使得栈指针自减，自减得到的内存应当能够被用来存储被调用函数的本地状态。
+
+### 编译成二进制文件 -c
 	gcc -c test.s
 	或者 gcc -c test.s -o test.o
 来看看test.o。
@@ -85,62 +110,89 @@ gcc 作为linux强大的编译工具，了解其用法对日常编程具有很�
 例如 hello.c world.c可通过如下编译命令生成 great.exe文件。
 	gcc hello.c world.c -o great.exe
 
-### 编译成静态库
+### gcc编译-D选项 传参
+练习源代码如下：
+
+	/*
+	 *验证 gcc -D 传参的用法
+ 	*/
+	#include<stdio.h>
+
+	int main(int argc,char *argv[])
+	{
+
+	#ifdef HAHA
+		printf("HAHA=%d\n",HAHA);
+	#else
+		printf("HAHA was not defined!\n");
+	#endif
+		return 0;
+	}
+
+编译及结果：
+
+> gcc -Wall -DHAHA test.c
+> a.exe
+> 运行结果：HAHA=1
+> 若 gcc -Wall test.c -DHAHA=2
+> 运行结果：HAHA=2
+> 若 gcc -Wall test.c -DHAHA=good，则无法通过编译
+> 原因是good没有申明
+
+再看一个例子，然后来总结用法：
+
+	'''
+	#include<string.h>
+
+	#ifdef HAHA
+	#undef HAHA
+	#define HAHA "haha"
+	#endif
+
+	int main()
+	{
+	#ifdef HAHA
+		if(strcmp(HAHA,"haha")==0){
+			printf("Hello.yunzhi!\n");
+		}
+	#else
+		printf("HAHA was not defined!\n");
+	#endif
+		return 0;
+	}
+	'''
+> 使用gcc -DHAHA test.c ，gcc -DHAHA=good test.c 与 gcc -DHAHA=2 test.c 
+> 编译结果都相同：Hello,yunzhi!
+> 使用 gcc test.c
+> 执行 a.exe 结果 HAHA was not defined!
+
+最后对于上面的第二个例子我们执行下这个命令看一下预处理后的文件：
+
+> gcc -E test.c -o test.i -DHAHA=2
+
+通过查看test.i文件可以看到如下预处理结果：
+
+	...
+	int main()
+	{
+	 	if(strcmp("haha","haha")==0){
+  			printf("Hello.yunzhi!\n");
+ 		}
+		return 0；
+	}
+
+最后，需要提到-U参数刚好完成与-D相反的操作。
+
+小结：
+
+1. 通过上面的两个例子可以看到，gcc 在使用 -D 传入编译参数的过程仅仅作用于预处理阶段。
+2. 当把-D后的宏变量定义为int型时，可以将该int值传递到程序中。而定义为别的值时，只会认为该宏已被定义。
+3. 因此，如果想在makefile中想用-D来传入控制代码分支的参数时，将该宏=某个字符串是没有意义的。第二个例子简单说明了如果真想用预定义的宏字符串，代码应该这样做控制。
 
 
-### 附录
+-----------------------------------------------------------------------------------------
+## 参考
 
-$ gcc --help
-用法：gcc [选项] 文件...
-选项：
-  -pass-exit-codes         在某一阶段退出时返回最高的错误码
-  --help                   显示此帮助说明
-  --target-help            显示目标机器特定的命令行选项
-  --help={common|optimizers|params|target|warnings|[^]{joined|separate|undocumented}}[,...] 显示特定类型的命令行选项
-  (使用‘-v --help’显示子进程的命令行参数)
-  --version                显示编译器版本信息
-  -dumpspecs               显示所有内建 spec 字符串
-  -dumpversion             显示编译器的版本号
-  -dumpmachine             显示编译器的目标处理器
-  -print-search-dirs       显示编译器的搜索路径
-  -print-libgcc-file-name  显示编译器伴随库的名称
-  -print-file-name=<库>    显示 <库> 的完整路径
-  -print-prog-name=<程序>  显示编译器组件 <程序> 的完整路径
-  -print-multi-directory   显示不同版本 libgcc 的根目录
-  -print-multi-lib         显示命令行选项和多个版本库搜索路径间的映射
-  -print-multi-os-directory 显示操作系统库的相对路径
-  -print-sysroot           显示目标库目录
-  -print-sysroot-headers-suffix 显示用于寻找头文件的 sysroot 后缀
-  -Wa,<选项>               将逗号分隔的 <选项> 传递给汇编器
-  -Wp,<选项>               将逗号分隔的 <选项> 传递给预处理器
-  -Wl,<选项>               将逗号分隔的 <选项> 传递给链接器
-  -Xassembler <参数>       将 <参数> 传递给汇编器
-  -Xpreprocessor <参数>    将 <参数> 传递给预处理器
-  -Xlinker <参数>          将 <参数> 传递给链接器
-  -save-temps              不删除中间文件
-  -save-temps=<arg>        不删除中间文件
-  -no-canonical-prefixes   生成其他 gcc 组件的相对路径时不生成规范化的前缀
-  -pipe                    使用管道代替临时文件
-  -time                    为每个子进程计时
-  -specs=<文件>            用 <文件> 的内容覆盖内建的 specs 文件
-  -std=<标准>              指定输入源文件遵循的标准
-  --sysroot=<目录>         将 <目录> 作为头文件和库文件的根目录
-  -B <目录>                将 <目录> 添加到编译器的搜索路径中
-  -v                       显示编译器调用的程序
-  -###                     与 -v 类似，但选项被引号括住，并且不执行命令
-  -E                       仅作预处理，不进行编译、汇编和链接
-  -S                       编译到汇编语言，不进行汇编和链接
-  -c                       编译、汇编到目标代码，不进行链接
-  -o <文件>                输出到 <文件>
-  -pie                     Create a position independent executable
-  -shared                  Create a shared library
-  -x <语言>                指定其后输入文件的语言,允许的语言包括：c c++ assembler none
-  ‘none’意味着恢复默认行为，即根据文件的扩展名猜测源文件的语言
-
-以 -g、-f、-m、-O、-W 或 --param 开头的选项将由 gcc 自动传递给其调用的
- 不同子进程。若要向这些进程传递其他选项，必须使用 -W<字母> 选项。
-
-报告程序缺陷的步骤请参见：
-<http://gcc.gnu.org/bugs.html>.
-
-[Yunzhi]:    http://yunzhi.github.io  "Yunzhi"
+1. [GCC的内嵌汇编语法](http://os.chinaunix.net/a2008/0313/977/000000977964.shtml)
+2. [CSDN论坛](http://bbs.csdn.net/topics/320108252)
+3. [gcc内嵌汇编](http://www.cnblogs.com/zhuyp1015/archive/2012/05/01/2478099.html)
