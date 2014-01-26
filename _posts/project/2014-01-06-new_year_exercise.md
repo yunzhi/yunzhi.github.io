@@ -98,7 +98,7 @@ description: memcpy函数的实现
     *	people	= man + woman + children
     *
     *************************************************************************/
-    
+    void flush();
     size_t find_woman_men_children(size_t w_offset,size_t c_offset,size_t threshold);
     
     int main(int argc,char *argv[])
@@ -114,15 +114,18 @@ description: memcpy函数的实现
     	assert(MANCOST_MINUS_CHILDCOST);
     	assert(WOMANCOST_MINUS_CHILDCOST);
     
-    	printf("pls input money:");
-    	while(scanf("%d",&money),(money<6)){
-    		printf("\nMoney should not less than 6,pls input again:");
-    	}
-    
-    	printf("pls input people:");
-    	while(scanf("%d",&people),(people<3)){
-    		printf("\npeople should not less than 3,pls input again:");
-    	}
+		printf("pls input money:");
+		while( ( scanf("%d",&money) != 1 ) || ( money < 6 ) ){
+			printf("\nMoney should be a number and not less than 6,pls input again:");
+			flush();
+		}
+
+		printf("pls input people:");
+		while( ( scanf("%d",&people) !=1 ) || ( people < 3 ) ){
+			printf("\npeople should be a number and not less than 3,pls input again:");
+			flush();
+		}
+	
     
     	a = money - CHILDCOST*people;
     	b = people*WOMANCOST - money;
@@ -161,6 +164,12 @@ description: memcpy函数的实现
     	return 0;
     }
     
+	void flush()
+	{
+		char c;
+		while((c=getchar()) != '\n' && c != EOF);
+	}
+
     size_t find_woman_men_children(size_t w_offset,size_t c_offset,size_t threshold)
     {
     	size_t t_women,t_children,t_women_left,t_children_left;
@@ -186,7 +195,7 @@ description: memcpy函数的实现
 说明：
 1.出于简单输入的缘故，程序中宏定义了男人，女人，孩子的票价。导致如果要变更价格需要重新编译。另外，某两个人的票价相同也可以。还需要假设孩子票价最低，如果不是可以将最低的票价放到孩子处，修改打印标题栏即可。
 2.由于想将总结果存在一个动态数组中，先计算可能性，然后再进行存储。从代码上看有些重复，因为没有想到什么更好的办法。
-3.用到的几个C语言知识：scanf(这个东西还是挺烦的，如果输入非数字字符，上面的程序就跑飞了),assert,动态数组，指向数组的指针。当然，还可以继续加ifdef这种宏来加入输入价格这样子的代码。顺便还看了看局部未初始化变量的存储。
+3.用到的几个C语言知识：scanf,assert,动态数组，指向数组的指针。当然，还可以继续加ifdef这种宏来加入输入价格这样子的代码。顺便还看了看局部未初始化变量的存储。
 
 
 
