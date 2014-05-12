@@ -73,7 +73,7 @@ description: 该篇介绍下自己为方便工作写的一些脚本
     	if [ "$checkfilename" == "true" ];then
     		unzip -l $filename | egrep "\.c|\.h|\.java|\.cpp"
     		if [ $? -ne 0 ];then
-    			pr_err "Base on K-touch privacy policy:
+    			pr_err "Base on company privacy policy:
     			The file with .c .h .java .cpp suffix should not be transmitt from this ftp!!!"
     			exit
     		fi
