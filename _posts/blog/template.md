@@ -9,4 +9,4 @@ category: blog
 
 
 
-[Yunzhi]:    http://yunzhi.github.io  "Yunzhi"
+["Yunzhi made"](http://yunzhi.github.io) &copy;

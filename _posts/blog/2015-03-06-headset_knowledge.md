@@ -603,6 +603,13 @@ headset.c
     MODULE_AUTHOR("Luther Ge <luther.ge@spreadtrum.com>");
     MODULE_LICENSE("GPL");
 
+分析：
+
+1. 360-373行，注册input设备。可以看到，一个input设备的注册方法，首先使用input_allocate_device为设备申请相关数据结构，然后初始化该结构的相关成员，如input->name，input->id.vendor, input->id.product, input->id.version(这四个字符串决定了键盘映射文件的名称)，然后调用__set_bit设置该input设备支持的事件类型，及调用input_set_capability设置支持的按键值，最后调用input_register_device将输出化完成的数据结构注册到input子系统中。一般的，我们不用去实现他的handle函数，evdev.c就可以完成该目的。
+
+2. 374-378行，初始化耳机和按键检测时用到的gpio口
+3. 380-394行，申请耳机按键检测的中断处理函数，初始化中断下半段的处理机制。可以看到这里使用了hr_timer这样一个内核中的高精度定时器来实现
+4. 396-417行，申请耳机插拔检测的中断处理函数，初始化中断下半段的处理机制。可以看到这里使用了work_queue这样一个机制来实现。
 
 可以看到，耳机在中断下半段处理时采用了内核定时器timer来实现。另外，耳机插拔的检测使用了h2w这个class，hook按键上报则采用了input子系统。
 

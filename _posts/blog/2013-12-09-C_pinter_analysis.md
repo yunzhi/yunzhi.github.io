@@ -48,12 +48,26 @@ description: 我所理解和掌握的C语言知识点总结
 > 编译器也接受数组形式的形参。如main函数的原型`int main(int argc,char* argv[]);`。所以下面这两个函数原型是相等的：
 
 		int strlen(char* string);
-		int strlen(char string[]);
+		int strlen(char string[]);		
+> 数组的长度。
+
+		int test[8];// sizeof(test) = 32 ; ARRAY_SIZE = (sizeof(test)/testof(test[0]))
 
 ### 3. 指针
-* 1). 定义
+* 1). 定义：
+
+		int* ptr; 
+		struct TEST* my_test;
 * 2). 初始化:指向已分配好空间的变量. 
+
+		ptr = (int*)malloc(sizeof(int));
+		my_test = (struct TEST*)malloc(sizeof(struct TEST));
+
 * 3). 使用
+
+		ptr++;
+		ret = scanf("%d",ptr);
+		memset(my_test,0,sizeof(struct TEST));
 
 ### 4. struct,union,enum
 * 1). struct使用:
@@ -788,7 +802,8 @@ C语言对结构体的访问就是该结构体成员的首地址加上结构体�
 		puts("Hello from C!");
 		return EXIT_SUCCESS;
 	}
- ### 6). C语言中的Duff device，据说效率比memcpy快
+
+### 6). C语言中的Duff device，据说效率比memcpy快
  
  	void duff_memcpy( char* to, char* from, size_t count ) 
 	{

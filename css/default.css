@@ -1,6 +1,5 @@
 /**
  * Author:           Yunzhi
- * Contact:          tangyao.made@gmail.com
  */
 
 /* 重置浏览器CSS */
@@ -32,7 +31,7 @@ body .hide{display:none;}
 
 
 /***********default settings**********/
-body {font-family: "微软雅黑","Arial","Helvetica","sans-serif";font-size:16px;color:#003399;}
+body {font-family: "微软雅黑","Arial","Helvetica","sans-serif";font-size:16px;color:#000000;}
 a {color:#4A75B5;text-decoration:none;outline:none;}
 a:hover {text-decoration:underline}
 a.external {padding-right:13px;background:url('/images/icons.gif') no-repeat right 1px;}
@@ -41,14 +40,15 @@ a.external:hover {background-position:right -15px;}
 .entry-title a:hover {text-decoration:none;}
 .entry-date {text-align:center;color:#999;margin-bottom:60px;font-size:14px;}
 
-h2 {font-size:22px;font-weight:bold;margin-bottom:25px;}
-h3 {font-size:18px;font-weight:bold;margin-bottom:25px;}
-h4,h5,h6 {font-weight:bold;margin-bottom:15px;}
-p {margin-bottom:17px;line-height:1.8em;white-space:pre-wrap;}
-code {background:#eee;border:1px solid #ccc;padding:0 5px;font-family:"Courier";line-height:14px;font-size:14px;word-wrap:break-word; }
+h2 {font-size:23px;font-weight:bold;margin-bottom:23px;}
+h3 {font-size:21px;font-weight:bold;margin-bottom:21px;}
+h4 {font-size:19px;font-weight:bold;margin-bottom:19px;}
+h5,h6 {font-size:18px;font-weight:bold;margin-bottom:18px;}
+p {margin-bottom:18px;line-height:1.8em;white-space:pre-wrap;}
+code {background:#eee;border:1px solid #003399;padding:0 5px;font-family:"Courier";line-height:14px;font-size:14px;word-wrap:break-word; }
 pre {background-color:#000;padding:15px;overflow:auto;margin-bottom:40px;font-size:14px;border: 1px solid #eee;-webkit-border-radius: 4px 4px 4px 4px;-moz-border-radius: 4px 4px 4px 4px;border-radius: 4px 4px 4px 4px;color:#b9bdb6;margin-top:-20px; }
 h4+pre, h3+pre { margin-top:20px; }
-pre code{background-color:transparent;border:none;padding:0;word-wrap:normal;}
+pre code{background-color:transparent;border: none;padding:0;word-wrap:normal;}
 pre ol{margin-left:25px;list-style-type:decimal;}
 
 /************layout style*****************/
@@ -137,7 +137,7 @@ h3.about {color:#777;margin-top:20px;font-size:22px;margin-bottom:10px}
 
 .home-menu { position:fixed; top:15px; left:15px; z-index:5; font-size:0; }
 .home-menu-icon { line-height:38px; padding:0 8px; display:inline-block; color:#fff; font-size:20px;  background:#000; }
-.home-follow { margin-left:10px; line-height:38px; padding:0 8px; display:inline-block; color:#3e511a; font-size:15px;}
+.home-follow { margin-left:4px; line-height:18px; padding:0 4px; display:inline-block; color:#3e511a; font-size:12px;}
 .home-menu-icon:hover,
 .home-follow:hover { color:#fff; text-decoration:none; }
 .home-contact { color:#fff; margin-top:2px;padding:8px 0 7px; text-align:center; display:none;}
