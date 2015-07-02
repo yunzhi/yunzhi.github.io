@@ -1,0 +1,12 @@
+---
+layout: post
+title: Android 工作中的参考
+category: project
+description: 记录一些在工作中查到的关于Android系统，开发的相关知识，参考链接．
+---
+
+
+＃(理解 Android Build 系统)[http://www.ibm.com/developerworks/cn/opensource/os-cn-android-build/]
+
+非常不错的一篇记录Android 编译和定制的文章．
+
