@@ -2,7 +2,7 @@
 layout: post
 title: (转载)Android进程间通信（IPC）机制Binder
 description: 本篇文章转自csdn博主罗升阳的博客，主要介绍Android进程间通信的主件binder
-category: blog
+category:
 ---
 
 本篇文章转自csdn博主[罗升阳](http://blog.csdn.net/luoshengyang/article/details/6618363)的博客中的关于该主题的一系列文章，主要介绍Android进程间通信的主件binder的实现。

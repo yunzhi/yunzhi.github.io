@@ -387,11 +387,11 @@ mac中编译及运行情况：
 
 \#argument 这种结构被预处理器翻译成 argument.于是可以有如下的代码：
 
-	#define PRINT(FOMART,VALUE) printf("the value of " #VALUE " is" FOMART "\n",VALUE")
+	#define PRINT(FOMART,VALUE) printf("the value of " #VALUE " is" FOMART "\n",VALUE)
 
 打印示例：
 	x=10
-	PRINT(x+3)
+	PRINT("%d", x+3)
 	>> the value of x+3 is 13
 
 \#\#结构把位于他两边的符号连接成同一个符号。

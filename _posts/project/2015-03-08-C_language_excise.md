@@ -5,6 +5,107 @@ category: project
 description: 平时看书或者网上找到的一些c语言的练习程序，以备将来参考
 ---
 
+## c语言的文件操作
+文件操作是软件写作的基本功之一，这里从网上找了相关教程。自己联系了下，总结写在这里，以便将来复习参考。
+
+stido.h 头文件中包含了 FILE 这个结构的声明，这是一个用于访问流的数据结构。对于没有ANSI程序，最少包含三个流：stdin, stdout, stderr, 他们都指向一个FILE结构的指针。
+
+标准流的IO更为简单，因为他们不需要打开关闭函数。IO以三种基本形式处理数据：
++ 字符： getchar, putchar
++ 文本行：gets/puts, scanf/printf
++ 二进制数据：fread/fwrite
+
+perror函数提供一种向用户报告错误的简单方法。
+
+C语言中没有输入输出语句，所有的输入输出功能都用 ANSI C提供的一组标准库函数来实现。文件操作标准库函数有：
+
++ 文件的打开操作
+> fopen 打开一个文件
++ 文件的关闭操作
+> fclose 关闭一个文件
++ 文件的读写操作 
+> fgetc 从文件中读取格式化一个字符
+> fputc 写一个字符到文件中去
+> fgets 从文件中读取一个字符串
+> fputs 写一个字符串到文件中去
+> fprintf 往文件中写格式化数据
+> fscanf 格式化读取文件中数据
+> fread 以二进制形式读取文件中的数据
+> fwrite 以二进制形式写数据到文件中去
+> getw 以二进制形式读取一个整数
+> putw 以二进制形式存贮一个整数
++ 文件状态检查函数 
+> feof 文件结束
+> ferror 文件读/写出错
+> clearerr 清除文件错误标志
+> ftell 了解文件指针的当前位置
++ 文件定位函数
+> rewind 反绕
+> fseek 随机定位
+> getcwd c库函数获取当前路径 char* getcwd(char *buffer, size_t size)
+> mkdir 创建目录 mkdir(char* name, int mode)
+
+### 1. 文件的打开
+#### 1．函数原型
+
+	FILE *fopen(char *pname,char *mode)
+#### 2．功能说明
+按照mode 规定的方式，打开由pname指定的文件。若找不到由pname指定的相应文件，就按以下方式之一处理：
+
++ （1） 此时如mode 规定按写（w）方式打开文件，就按由pname指定的名字建立一个新文件；
++ （2） 此时如mode 规定按读（r）方式打开文件，就会产生一个错误。
+
+打开文件的作用是：
+
++ （1）分配给打开文件一个FILE 类型的文件结构体变量，并将有关信息填入文件结构体变量；
++ （2）开辟一个缓冲区；
++ （3）调用操作系统提供的打开文件或建立新文件功能，打开或建立指定文件；
+FILE *：指出fopen是一个返回文件类型的指针函数；
+
+#### 3．参数说明
++ pname：是一个字符指针，它将指向要打开或建立的文件的文件名字符串。
++ mode：是一个指向文件处理方式字符串的字符指针。所有可能的文件处理方式如下：
+
+格式 | 读 | 写 | 追加
+文本 | r   | w | a
+二进制| rb| wb | ab
+
+#### 4．返回值
++ 正常返回：被打开文件的文件指针。
++ 异常返回：NULL，表示打开操作不成功。
+
+
+### 2. 文件的关闭
+
+#### 1．函数原型
+
+	int fclose(FILE *fp)；
+#### 2． 功能说明
+　　关闭由fp指出的文件。此时调用操作系统提供的文件关闭功能，关闭由fp->fd指出的文件；释放由fp指出的文件类型结构体变量；返回操作结果，即0或EOF。
+
+#### 3． 参数说明
+　　fp：一个已打开文件的文件指针。
+
+#### 4． 返回值
+　　正常返回：0。
+　　异常返回：EOF，表示文件在关闭时发生错误。
+　　
+### 3. 文件读写
+函数原型：
+
+int fgetc(FILE *fp)；
+int fputc(int ch,FILE *fp);
+char *fgets(char *str,int n,FILE *fp);
+int fputs(char *str,FILE *fp);
+int fprintf(FILE *fp,char *format,arg_list);
+int fread(void *buffer,unsigned sife,unsigned count,FILE *fp);
+int fwrite(void *buffer,unsigned sife,unsigned count,FILE *fp);
+int getw(FILE *fp);
+int putw(int n,FILE *fp);
+
+## 时间编程
+
+
 ## 高通平台下耳机驱动的初始化分析
 
 从高通8x20平台以来，高通耳机驱动模块引入了MBHC这样一个耳机检测机制。这个机制中需要用户去设定一堆的值，然后通过初始化的调用写到相应的寄存器中。本来有一大堆的数据结构要去kmalloc/kzmalloc（对应应用程序中是malloc/zalloc），高通的软件工程师巧妙的借用了C语言的数据指针转化和内存定位来完成这个工作，当时读这一段代码时，非常受益。攒到下面，有机会也在自己的代码中借用下。

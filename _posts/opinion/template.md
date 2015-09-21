@@ -3,7 +3,7 @@ layout: post
 title: 博客小记
 category: opinion
 description: 2013年11月下旬某日，在北邮人看看到一帖子推荐用github写博客搭建个人网站，当时很震惊。于是乎，花了大概两个星期的空闲时间了解这方面的资料。参考Beiyuu的github博客网站搭建了这个。主要的架构都是前辈的（感谢），小小的修改了一点点代码，以后有时间再继续改进。预计这个目录下的内容写一些生活方面的感触。
-
+---
 
 ##2014国内社交媒体
 
@@ -17,6 +17,5 @@ description: 2013年11月下旬某日，在北邮人看看到一帖子推荐用g
 
 转自爱范儿
 
----
 
-[Yunzhi]:    http://yunzhi.github.io  "Yunzhi"
+["Yunzhi made"](http://yunzhi.github.io) &copy;

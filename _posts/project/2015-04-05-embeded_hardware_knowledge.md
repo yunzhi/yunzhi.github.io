@@ -1,8 +1,8 @@
 ---
 layout: post
 title: (转载)硬件行话
+category: project
 description: 介绍嵌入式开发中涉及的一些硬件知识
-category: blog
 ---
 
 本文转自51CTO博主李云的同名博文。
