@@ -1,3 +1,10 @@
+---
+layout: post
+title: c# sharp 基础
+category: blog
+description: 介绍C#开发中会普遍用到的日志库log4net
+---
+
 # c# sharp 基础
 
 ## 引
@@ -81,8 +88,6 @@ log4net是一个功能著名的开源日志记录组件。利用log4net可以方
     using log4net;
 
     //注意下面的语句一定要加上，指定log4net使用.config文件来读取配置信息
-    //如果是WinForm（假定程序为MyDemo.exe，则需要一个MyDemo.exe.config文件）
-    //如果是WebForm，则从web.config中读取相关信息
     [assembly: log4net.Config.XmlConfigurator(Watch = true)]
     namespace Log4NetDemo
     {
@@ -90,10 +95,7 @@ log4net是一个功能著名的开源日志记录组件。利用log4net可以方
         /// 说明：本程序演示如何利用log4net记录程序日志信息。log4net是一个功能著名的开源日志记录组件。
         /// 利用log4net可以方便地将日志信息记录到文件、控制台、Windows事件日志和数据库中（包括MS SQL Server, Access, Oracle9i,Oracle8i,DB2,SQLite）。
         /// 下面的例子展示了如何利用log4net记录日志
-        /// 作者：周公
-        /// 时间：2008-3-26
-        /// 首发地址：http://blog.csdn.net/zhoufoxcn/archive/2008/03/26/2220533.aspx
-        /// </summary>
+
         public class MainClass
         {
             public static void Main(string[] args)
