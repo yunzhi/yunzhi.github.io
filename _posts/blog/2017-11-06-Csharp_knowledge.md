@@ -123,4 +123,15 @@ log4net是一个功能著名的开源日志记录组件。利用log4net可以方
 
 ## 程序打包发布
 
+Windows Installer 的用法
+
+
+## excel操作
+
+使用 NPOI 库可以轻松进行 Excel 的操作
+
+
+
+
+
 

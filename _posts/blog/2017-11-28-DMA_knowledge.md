@@ -44,3 +44,85 @@ description: 介绍一些DMA知识
 -11 是否使用FIFO
 -12 如果使用FIFO,当FIFO数据存量为多少的时候将数据发送出去
 -13 还有就是对内存和外设burst模式的配置
+
+
+## Stm32 Uart DMA的使用
+
+1. 配置 DMA
+
+    /* DMA controller clock enable */
+    __HAL_RCC_DMA1_CLK_ENABLE();
+
+    /* DMA interrupt init */
+    /* DMA1_Channel4_IRQn interrupt configuration */
+    HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+    /* DMA1_Channel5_IRQn interrupt configuration */
+    HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
+
+
+
+2. 串口终端 IDLE 处理
+
+
+    /* UART in mode IDLE -------------------------------------------------------*/
+    tmp_flag = __HAL_UART_GET_FLAG(huart, UART_FLAG_IDLE);
+    tmp_it_source = __HAL_UART_GET_IT_SOURCE(huart, UART_IT_IDLE);  
+
+    if ((tmp_flag != RESET) && (tmp_it_source != RESET))
+        HAL_UART_RecvIdleIRQHandler(huart);
+
+
+
+3.  使能IDLE中端
+
+      /* Enable the UART IDLE interrupt */
+      __HAL_UART_ENABLE_IT(huart, UART_IT_IDLE);
+
+4.  中端函数处理
+
+  void Uart1RecvDataDmaNotify(UART_HandleTypeDef *huart)
+  {	
+      int16_t recvLen;
+
+      recvLen = UART1_BUFF_LEN - __HAL_DMA_GET_COUNTER(huart->hdmarx);
+
+      if (recvLen > 0)
+      {
+          memcpy(uart1TxBuf, uart1RxBuf, recvLen);
+          HAL_UART_Transmit_DMA(huart, uart1TxBuf, recvLen);
+      }
+  }
+
+  void HAL_UART_RecvIdleIRQHandler(UART_HandleTypeDef *huart)
+  {
+     if ( USART1 == huart->Instance ) {
+
+          /* 关闭DMA */
+          __HAL_DMA_DISABLE(huart->hdmarx);
+
+          /* 清除IDLE中断标志位 */
+          __HAL_UART_CLEAR_IDLEFLAG(huart);
+
+          /* 处理接收数据 */		
+          Uart1RecvDataDmaNotify(huart);
+
+          /* 清除相关标志位 */
+          __HAL_DMA_CLEAR_FLAG (huart->hdmarx, __HAL_DMA_GET_TC_FLAG_INDEX(huart->hdmarx));
+          __HAL_DMA_CLEAR_FLAG (huart->hdmarx, __HAL_DMA_GET_HT_FLAG_INDEX(huart->hdmarx));
+          __HAL_DMA_CLEAR_FLAG (huart->hdmarx, __HAL_DMA_GET_TE_FLAG_INDEX(huart->hdmarx));
+          //__HAL_DMA_CLEAR_FLAG (huart->hdmarx, __HAL_DMA_GET_DME_FLAG_INDEX(huart->hdmarx));
+          //__HAL_DMA_CLEAR_FLAG (huart->hdmarx, __HAL_DMA_GET_FE_FLAG_INDEX(huart->hdmarx));
+
+          /* 重新设置数据长度 */
+          huart->hdmarx->Instance->CNDTR = UART1_BUFF_LEN;
+
+          /* 重新启动DMA接收 */
+          __HAL_DMA_ENABLE(huart->hdmarx);
+
+      }
+      return;
+  }
+
+

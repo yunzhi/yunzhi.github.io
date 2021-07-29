@@ -1,9 +1,11 @@
 auto: true
 
+gems: [jekyll-paginate]
+
 markdown: kramdown
 highlighter: rouge
 paginate: 8
 permalink: /:title
+title: 引商刻羽，杂以流徵
 
-title: yunzhi
 #url: http://yunzhi.github.io
